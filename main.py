@@ -1,3 +1,27 @@
+"""
+MIT License
+
+Copyright (c) 2018 NeuroAssassin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 from __future__ import unicode_literals
 from utils.time import humanize_timedelta
 import telegram
@@ -10,9 +34,8 @@ import logging
 from logging import log
 from dotenv import load_dotenv
 from time import sleep
-from datetime import datetime
 import html
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler
 
 load_dotenv('credentials.env')
 
@@ -54,7 +77,7 @@ r = praw.Reddit(user_agent=redditapp,
                 client_id=reddit_cID,
                 client_secret=reddit_secret,
                 username=reddituser,
-                password=redditpass)
+                password=redditpass) # Creating reddit account object
 
 r.read_only = True
 subreddit = r.subreddit(subredditname)
