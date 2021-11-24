@@ -109,8 +109,25 @@ def main():
                         pass
                     else:
                         log.info("Processing submission with ID {}...".format(submission.id))
+                        if subredditname == "slavelabour":
+                            if submission.link_flair_text == "Task":
+                                title = html.escape(submission.title or '')
+                                user = html.escape(submission.author.name or '') + f" *{humanize_timedelta(seconds=round(time.time())-submission.created_utc)}* ago"
+                                text = html.escape(submission.selftext or '')
+                                template = "*{title}*\n\n{text}\n\nCreated by u/{user}"
+                                message = template.format(title=title, text=text[:600] + '...' if len(text) > 600 else text, link=link, user=user)
 
-                        if submission.link_flair_text == "Task":
+                                log.info("Posting {}".format(link))
+                                bot.sendMessage(chat_id=telegramChannelID, text=message, reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton(text='View on Reddit', url=submission.url)]]), parse_mode = telegram.ParseMode.MARKDOWN)
+                                articlewords = ['article', 'writer', 'blog']
+                                def check_if_article_task():
+                                    for word in articlewords:
+                                        if word in title.lower() or word in text.lower():
+                                            return True
+                                    return False
+                                if check_if_article_task():
+                                    bot.sendMessage(chat_id=telegramChannelID, text="@iqeyial @jehrrrome dis might be what you're looking for")
+                        else:
                             title = html.escape(submission.title or '')
                             user = html.escape(submission.author.name or '') + f" *{humanize_timedelta(seconds=round(time.time())-submission.created_utc)}* ago"
                             text = html.escape(submission.selftext or '')
@@ -118,15 +135,7 @@ def main():
                             message = template.format(title=title, text=text[:600] + '...' if len(text) > 600 else text, link=link, user=user)
 
                             log.info("Posting {}".format(link))
-                            bot.sendMessage(chat_id=telegramChannelID, text=message, reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton(text='View on Reddit', url=submission.url)]]), parse_mode = telegram.ParseMode.MARKDOWN)
-                            articlewords = ['article', 'writer', 'blog']
-                            def check_if_article_task():
-                                for word in articlewords:
-                                    if word in title.lower() or word in text.lower():
-                                        return True
-                                return False
-                            if check_if_article_task():
-                                bot.sendMessage(chat_id=telegramChannelID, text="@iqeyial @jehrrrome dis might be what you're looking for")
+                            bot.sendPhoto(chat_id=telegramChannelID, photo=submission.url, caption=message, reply_markup=telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton(text='View on Reddit', url=submission.url)]]), parse_mode = telegram.ParseMode.MARKDOWN)
                         processed_submissions.append(submission.id)
                 except Exception as e:
                     log.exception("Error parsing {}".format(link))
